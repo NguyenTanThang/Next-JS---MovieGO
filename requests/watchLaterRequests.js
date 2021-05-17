@@ -36,6 +36,7 @@ export const getWatchLaterByCustomerID = async (customerID) => {
                 view: listOfNumberOfViews[index]
             }
         })
+        console.log(movies);
 
         return movies;
     } catch (error) {

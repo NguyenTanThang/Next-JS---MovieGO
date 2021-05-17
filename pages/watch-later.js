@@ -17,7 +17,7 @@ function WatchLater() {
             const currentUser = authenticationService.currentUserValue;
             const masterMoviesLocal = await getWatchLaterByCustomerID(currentUser._id);
 
-            const movies = masterMovies;
+            const movies = masterMoviesLocal;
 
             const pageObjectLocal = paginate(movies.length, currentPage, 15, 6);
             let currentMovieData = movies.slice(pageObjectLocal.startIndex, pageObjectLocal.endIndex + 1);
@@ -27,34 +27,38 @@ function WatchLater() {
                     ...prevPageObject,
                     ...pageObjectLocal
                 }
-            })
-            
-
+            });
             setMasterMovies(masterMoviesLocal);
             setMovies(currentMovieData);
-        })
+        })();
     }, []);
 
     useEffect(() => {
-        (async () => {
-            const movies = masterMovies
+        const movies = masterMovies
 
-            const pageObjectLocal = paginate(movies.length, currentPage, 15, 6);
-            let currentMovieData = movies.slice(pageObjectLocal.startIndex, pageObjectLocal.endIndex + 1);
+        const pageObjectLocal = paginate(movies.length, currentPage, 15, 6);
+        let currentMovieData = movies.slice(pageObjectLocal.startIndex, pageObjectLocal.endIndex + 1);
 
-            setPageObject(prevPageObject => {
-                return {
-                    ...prevPageObject,
-                    ...pageObjectLocal
-                }
-            })
-            
-            setMovies(currentMovieData);
+        setPageObject(prevPageObject => {
+            return {
+                ...prevPageObject,
+                ...pageObjectLocal
+            }
         })
+        
+        setMovies(currentMovieData);
     }, [currentPage]);
 
     const changePageNumber = (pageNumber) => {
         setCurrentPage(pageNumber);
+    }
+
+    if (movies.length === 0) {
+        return (<div className='watch-later-page search-page'>
+        <div className="text-center">
+            <h2>You don't have any movies in your watch later list yet</h2>
+        </div>
+    </div>)
     }
 
     return (

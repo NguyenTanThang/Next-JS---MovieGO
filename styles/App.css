@@ -3,6 +3,14 @@
     --antd-wave-shadow-color: #f3c669;
 }
 
+.watch-later-page .text-center {
+    text-align: center;
+}
+
+.watch-later-page .text-center h2  {
+    color: #FFF;
+}
+
 /*Navbar*/
 .navbar {
     background-color: transparent;
