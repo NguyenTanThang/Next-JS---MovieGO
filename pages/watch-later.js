@@ -5,35 +5,52 @@ import {getWatchLaterByCustomerID} from "../requests";
 import {paginate} from "../utils";
 import { authenticationService } from '../_services';
 
-export const getStaticProps = async () => {
-    const currentUser = authenticationService.currentUserValue;
-    const masterMovies = getWatchLaterByCustomerID(currentUser._id);
-  
-    return {
-      props: { masterMovies }
-    }
-  }
-
-function WatchLater({masterMovies}) {
+function WatchLater() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [movies, setMovies] = useState([]);
-    const [pageObject, setPageObject] = useState({})
+    const [masterMovies, setMasterMovies] = useState([]);
+    const [pageObject, setPageObject] = useState({});
 
     useEffect(() => {
-        const movies = masterMovies
+        (async () => {
+            const currentUser = authenticationService.currentUserValue;
+            const masterMoviesLocal = await getWatchLaterByCustomerID(currentUser._id);
 
-        const pageObjectLocal = paginate(movies.length, currentPage, 15, 6);
-        let currentMovieData = movies.slice(pageObjectLocal.startIndex, pageObjectLocal.endIndex + 1);
+            const movies = masterMovies;
 
-        setPageObject(prevPageObject => {
-            return {
-                ...prevPageObject,
-                ...pageObjectLocal
-            }
+            const pageObjectLocal = paginate(movies.length, currentPage, 15, 6);
+            let currentMovieData = movies.slice(pageObjectLocal.startIndex, pageObjectLocal.endIndex + 1);
+
+            setPageObject(prevPageObject => {
+                return {
+                    ...prevPageObject,
+                    ...pageObjectLocal
+                }
+            })
+            
+
+            setMasterMovies(masterMoviesLocal);
+            setMovies(currentMovieData);
         })
-        
-        setMovies(currentMovieData);
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            const movies = masterMovies
+
+            const pageObjectLocal = paginate(movies.length, currentPage, 15, 6);
+            let currentMovieData = movies.slice(pageObjectLocal.startIndex, pageObjectLocal.endIndex + 1);
+
+            setPageObject(prevPageObject => {
+                return {
+                    ...prevPageObject,
+                    ...pageObjectLocal
+                }
+            })
+            
+            setMovies(currentMovieData);
+        })
     }, [currentPage]);
 
     const changePageNumber = (pageNumber) => {
