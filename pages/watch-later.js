@@ -14,7 +14,7 @@ export const getStaticProps = async () => {
     }
   }
 
-function WatchLater({movies}) {
+function WatchLater({masterMovies}) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [movies, setMovies] = useState([]);
